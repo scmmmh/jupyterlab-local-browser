@@ -1,0 +1,7 @@
+{
+    "ServerApp": {
+      "jpserver_extensions": {
+        "jupyterlab_local_browser": true
+      }
+    }
+  }
