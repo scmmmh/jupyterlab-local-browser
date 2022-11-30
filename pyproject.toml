@@ -74,7 +74,8 @@ build_dir = "jupyterlab_local_browser/labextension"
 
 [tool.hatch.envs.default]
 dependencies = [
-    "build"
+    "build",
+    "jupyterlab>=3.4.7,<4.0.0"
 ]
 
 [tool.jupyter-releaser.options]
