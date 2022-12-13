@@ -138,6 +138,8 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
           search: iFrameLocation.search,
           hash: iFrameLocation.hash
         });
+        this._pathWidget.value =
+          pathname.charAt(0) === '/' ? pathname.substring(1) : pathname;
       }
     }
   }
