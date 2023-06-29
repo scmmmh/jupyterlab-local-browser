@@ -1,7 +1,6 @@
 import {
   MainAreaWidget,
   IFrame,
-  ReactiveToolbar,
   ReactWidget
 } from '@jupyterlab/apputils';
 import { IStateDB } from '@jupyterlab/statedb';
@@ -19,7 +18,6 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       content: new IFrame({
         sandbox: ['allow-same-origin', 'allow-scripts']
       }),
-      toolbar: new ReactiveToolbar()
     });
     this.id = options.uuid;
     this.title.label = 'Local Browser';

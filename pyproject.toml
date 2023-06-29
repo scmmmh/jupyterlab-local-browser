@@ -1,12 +1,12 @@
 [build-system]
-requires = ["hatchling>=1.4.0", "jupyterlab>=3.4.7,<4.0.0", "hatch-nodejs-version"]
+requires = ["hatchling>=1.5.0", "jupyterlab>=3.0.0,<4", "hatch-nodejs-version"]
 build-backend = "hatchling.build"
 
 [project]
 name = "jupyterlab_local_browser"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab",
@@ -16,25 +16,17 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "psutil"
+    "jupyterlab>=3.0.0,<4",
+    "jupyter_server_proxy",
+    "psutil",
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
-
-[project.optional-dependencies]
-test = [
-    "coverage",
-    "pytest",
-    "pytest-asyncio",
-    "pytest-cov",
-    "pytest-tornasync"
-]
 
 [tool.hatch.version]
 source = "nodejs"
@@ -47,8 +39,8 @@ artifacts = ["jupyterlab_local_browser/labextension"]
 exclude = [".github", "binder"]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"jupyterlab_local_browser/labextension" = "share/jupyter/labextensions/local_browser"
-"install.json" = "share/jupyter/labextensions/local_browser/install.json"
+"jupyterlab_local_browser/labextension" = "share/jupyter/labextensions/jupyterlab_local_browser"
+"install.json" = "share/jupyter/labextensions/jupyterlab_local_browser/install.json"
 
 [tool.hatch.build.hooks.version]
 path = "jupyterlab_local_browser/_version.py"
@@ -72,12 +64,16 @@ npm = ["jlpm"]
 source_dir = "src"
 build_dir = "jupyterlab_local_browser/labextension"
 
-[tool.hatch.envs.default]
-dependencies = [
-    "build",
-    "jupyterlab>=3.4.7,<4.0.0",
-    "jupyter_server_proxy"
-]
-
 [tool.jupyter-releaser.options]
 version_cmd = "hatch version"
+
+[tool.jupyter-releaser.hooks]
+before-build-npm = [
+    "python -m pip install 'jupyterlab>=3.0.0,<4'",
+    "jlpm",
+    "jlpm build:prod"
+]
+before-build-python = ["jlpm clean:all"]
+
+[tool.check-wheel-contents]
+ignore = ["W002"]

@@ -1,11 +1,11 @@
 # jupyterlab_local_browser
 
-[![Github Actions Status](https://github.com/github_username/local_browser/workflows/Build/badge.svg)](https://github.com/github_username/local_browser/actions/workflows/build.yml)
-A browser for localhost services
+[![Github Actions Status](https://github.com/scmmmh/jupyterlab-local-browser/workflows/Build/badge.svg)](https://github.com/scmmmh/jupyterlab-local-browser/actions/workflows/build.yml)
+A JupyterLab local browser
 
 ## Requirements
 
-- JupyterLab >= 3.0
+- JupyterLab >= 4.0.0
 
 ## Install
 
@@ -37,7 +37,7 @@ The `jlpm` command is JupyterLab's pinned version of
 # Clone the repo to your local environment
 # Change directory to the jupyterlab_local_browser directory
 # Install package in development mode
-pip install -e .
+pip install -e "."
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
 # Rebuild extension Typescript source after making changes
@@ -69,7 +69,7 @@ pip uninstall jupyterlab_local_browser
 
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
-folder is located. Then you can remove the symlink named `local_browser` within that folder.
+folder is located. Then you can remove the symlink named `jupyterlab_local_browser` within that folder.
 
 ### Testing the extension
 

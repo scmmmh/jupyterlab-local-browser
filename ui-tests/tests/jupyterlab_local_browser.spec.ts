@@ -16,6 +16,6 @@ test('should emit an activation console message', async ({ page }) => {
   await page.goto();
 
   expect(
-    logs.filter(s => s === 'JupyterLab extension local_browser is activated!')
+    logs.filter(s => s === 'JupyterLab extension jupyterlab_local_browser is activated!')
   ).toHaveLength(1);
 });

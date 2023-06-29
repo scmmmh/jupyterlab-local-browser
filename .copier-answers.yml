@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.0.7
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: mark.hall@open.ac.uk
+author_name: Mark Hall
+has_binder: false
+has_settings: false
+kind: frontend
+labextension_name: jupyterlab_local_browser
+project_short_description: A JupyterLab local browser
+python_name: jupyterlab_local_browser
+repository: https://github.com/scmmmh/jupyterlab-local-browser
+test: true
+
