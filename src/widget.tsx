@@ -1,13 +1,17 @@
 import {
   MainAreaWidget,
   IFrame,
-  ReactWidget
+  ReactWidget,
+  ToolbarButton,
 } from '@jupyterlab/apputils';
+import { refreshIcon, HTMLSelect } from '@jupyterlab/ui-components';
 import { IStateDB } from '@jupyterlab/statedb';
 import { ServerConnection } from '@jupyterlab/services';
 import { URLExt } from '@jupyterlab/coreutils';
 import { Message } from '@lumino/messaging';
 import React from 'react';
+
+import { webIcon } from './icon';
 
 /**
  * A widget providing a browser for local servers.
@@ -22,7 +26,20 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
     this.id = options.uuid;
     this.title.label = 'Local Browser';
     this.title.closable = true;
+    this.title.icon = webIcon;
     this.content.addClass('lb-localBrowser');
+
+    this._modeWidget = new SelectWidget({
+      onChange: () => {
+        this.toolbarChanged();
+      },
+      value: 'relative'
+    });
+    this._modeWidget.values = [
+      ['relative', 'Relative Path'],
+      ['absolute', 'Absolute Path'],
+    ];
+    this.toolbar.addItem('mode', this._modeWidget);
 
     this._portsWidget = new SelectWidget({
       onChange: () => {
@@ -36,10 +53,13 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       onChange: () => {
         this.toolbarChanged();
       },
-      value: ''
+      value: '',
     });
     this.toolbar.addItem('path', this._pathWidget);
-    const reloadButton = new ReloadWidget({
+
+    const reloadButton = new ToolbarButton({
+      icon: refreshIcon,
+      iconLabel: 'Reload',
       onClick: () => {
         this.toolbarChanged();
       }
@@ -58,20 +78,21 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
 
     options.statedb.fetch(options.uuid).then((data: any) => {
       if (data) {
+        this._modeWidget.value = data.mode;
         this._portsWidget.value = data.port;
         this._pathWidget.value =
           data.pathname.charAt(0) === '/'
             ? data.pathname.substring(1)
             : data.pathname;
-        const url =
-          '/' +
-          data.mode +
-          '/' +
+        /*const url =
+          '/proxy' +
+          (data.mode === 'absolute' ? '/absolute/' : '/') +
           data.port +
           data.pathname +
           data.search +
           data.hash;
-        this.content.url = url;
+        this.content.url = url;*/
+        this.toolbarChanged();
       }
     });
 
@@ -101,7 +122,11 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       );
     } else {
       this.content.url =
-        '/proxy/' + this._portsWidget.value + '/' + this._pathWidget.value;
+        '/proxy' +
+        (this._modeWidget.value === 'absolute' ? '/absolute/' : '/') +
+        this._portsWidget.value +
+        '/' +
+        this._pathWidget.value;
     }
   }
 
@@ -125,8 +150,12 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
         this._statedb.remove(this.id);
       } else {
         let pathname = iFrameLocation.pathname.substring(1);
-        const mode = pathname.substring(0, pathname.indexOf('/'));
-        pathname = pathname.substring(pathname.indexOf('/') + 1);
+        const mode = (pathname.startsWith('proxy/absolute/') ? 'absolute' : 'relative');
+        if (mode === 'absolute') {
+          pathname = pathname.substring(15);
+        } else {
+          pathname = pathname.substring(6);
+        }
         const port = pathname.substring(0, pathname.indexOf('/'));
         pathname = pathname.substring(pathname.indexOf('/'));
         this._statedb.save(this.id, {
@@ -173,6 +202,7 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
   private _serverSettings: ServerConnection.ISettings;
   private _loadPortsInterval = -1;
   private _statedb: IStateDB;
+  private _modeWidget: SelectWidget;
   private _portsWidget: SelectWidget;
   private _pathWidget: PathWidget;
 }
@@ -215,7 +245,7 @@ class SelectWidget extends ReactWidget {
         </option>
       );
     }
-    return <select onChange={evt => this.onChange(evt)}>{values}</select>;
+    return <HTMLSelect onChange={evt => this.onChange(evt)}>{values}</HTMLSelect>;
   }
 
   private _values: [string, string][];
@@ -252,44 +282,13 @@ class PathWidget extends ReactWidget {
         type="text"
         value={this._value}
         onChange={evt => this.onChange(evt)}
+        className="jp-Default"
       ></input>
     );
   }
 
   private _value: string;
   private _onChange: () => void;
-}
-
-class ReloadWidget extends ReactWidget {
-  constructor(options: { onClick: () => void }) {
-    super();
-
-    this._onClick = options.onClick;
-  }
-
-  onClick() {
-    this._onClick();
-  }
-
-  render(): JSX.Element {
-    return (
-      <button
-        aria-label="Reload"
-        onClick={evt => {
-          this._onClick();
-        }}
-      >
-        <svg style={{ width: '16px', height: '16px' }} viewBox="0 0 24 24">
-          <path
-            fill="currentColor"
-            d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z"
-          />
-        </svg>
-      </button>
-    );
-  }
-
-  private _onClick: () => void;
 }
 
 export namespace LocalBrowserWidget {

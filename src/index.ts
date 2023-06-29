@@ -8,6 +8,7 @@ import { ILauncher } from '@jupyterlab/launcher';
 import { IStateDB } from '@jupyterlab/statedb';
 import { v4 as uuidv4 } from 'uuid';
 
+import { webIcon } from './icon';
 import { LocalBrowserWidget } from './widget';
 
 /**
@@ -29,6 +30,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.commands.addCommand(command, {
       label: (args: any) => (args['isPalette'] ? 'New Local Browser' : 'Local Browser'),
       caption: 'Start a new Local Browser',
+      icon: webIcon,
       execute: (args: any) => {
         // Create the widget
         const uuid = args && args.uuid ? args.uuid : 'lb-' + uuidv4();
@@ -50,7 +52,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // Add the command to the launcher.
     launcher.add({
       command,
-      category: 'Notebook',
+      category: 'Open Computing Lab',
       rank: 1,
     });
 
