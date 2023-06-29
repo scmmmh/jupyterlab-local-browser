@@ -24,8 +24,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     restorer: ILayoutRestorer,
     statedb: IStateDB
   ) => {
-    console.log('Start activation');
-
     // Add the command to open the local browser
     const command = 'jupyterlab_local_browser:open';
     app.commands.addCommand(command, {
@@ -68,8 +66,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
         return { uuid: obj.node.id };
       }
     });
-
-    console.log('Complete activation');
   }
 };
 
