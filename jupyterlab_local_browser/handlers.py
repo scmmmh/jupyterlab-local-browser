@@ -26,7 +26,7 @@ class OpenPortsHandler(APIHandler):
         ports.update([
             conn.laddr.port
             for conn in net_connections(kind='tcp')
-            if conn.laddr.ip == '127.0.0.1' and conn.status == 'LISTEN'
+            if (conn.laddr.ip == '127.0.0.1' or conn.laddr.ip == '0.0.0.0') and conn.status == 'LISTEN'
                 and conn.laddr.port not in self._config.hidden
         ])
         ports = list(ports)
