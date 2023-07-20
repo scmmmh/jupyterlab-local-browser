@@ -84,14 +84,6 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
           data.pathname.charAt(0) === '/'
             ? data.pathname.substring(1)
             : data.pathname;
-        /*const url =
-          '/proxy' +
-          (data.mode === 'absolute' ? '/absolute/' : '/') +
-          data.port +
-          data.pathname +
-          data.search +
-          data.hash;
-        this.content.url = url;*/
         this.toolbarChanged();
       }
     });
@@ -122,7 +114,8 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       );
     } else {
       this.content.url =
-        '/proxy' +
+        this._serverSettings.baseUrl +
+        'proxy' +
         (this._modeWidget.value === 'absolute' ? '/absolute/' : '/') +
         this._portsWidget.value +
         '/' +
@@ -149,7 +142,7 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       ) {
         this._statedb.remove(this.id);
       } else {
-        let pathname = iFrameLocation.pathname.substring(1);
+        let pathname = iFrameLocation.href.substring(this._serverSettings.baseUrl.length);
         const mode = (pathname.startsWith('proxy/absolute/') ? 'absolute' : 'relative');
         if (mode === 'absolute') {
           pathname = pathname.substring(15);
