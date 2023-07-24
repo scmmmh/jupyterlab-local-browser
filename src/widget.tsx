@@ -61,7 +61,11 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       icon: refreshIcon,
       iconLabel: 'Reload',
       onClick: () => {
-        this.toolbarChanged();
+        const contentDocument = (this.content.node.children[0] as HTMLIFrameElement)
+        .contentDocument;
+        if (contentDocument) {
+          contentDocument.location.reload();
+        }
       }
     });
     this.toolbar.addItem('reload', reloadButton);
