@@ -11,7 +11,7 @@ import { URLExt } from '@jupyterlab/coreutils';
 import { Message } from '@lumino/messaging';
 import React from 'react';
 
-import { webIcon } from './icon';
+import { webIcon, newTabIcon } from './icon';
 
 /**
  * A widget providing a browser for local servers.
@@ -62,13 +62,22 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
       iconLabel: 'Reload',
       onClick: () => {
         const contentDocument = (this.content.node.children[0] as HTMLIFrameElement)
-        .contentDocument;
+          .contentDocument;
         if (contentDocument) {
           contentDocument.location.reload();
         }
       }
     });
     this.toolbar.addItem('reload', reloadButton);
+
+    const newTabButton = new ToolbarButton({
+      icon: newTabIcon,
+      iconLabel: 'Open in New Tab',
+      onClick: () => {
+        window.open(this.content.url, '');
+      }
+    });
+    this.toolbar.addItem('newTab', newTabButton);
 
     this._statedb = options.statedb;
 
