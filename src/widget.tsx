@@ -20,7 +20,7 @@ export class LocalBrowserWidget extends MainAreaWidget<IFrame> {
   constructor(options: LocalBrowserWidget.IOptions) {
     super({
       content: new IFrame({
-        sandbox: ['allow-same-origin', 'allow-scripts']
+        sandbox: ['allow-same-origin', 'allow-scripts', 'allow-modals', 'allow-forms', 'allow-popups']
       }),
     });
     this.id = options.uuid;
