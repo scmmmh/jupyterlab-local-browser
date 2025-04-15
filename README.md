@@ -1,3 +1,5 @@
+**Deprecated and no longer supported**
+
 # jupyterlab_local_browser
 
 [![Github Actions Status](https://github.com/scmmmh/jupyterlab-local-browser/workflows/Build/badge.svg)](https://github.com/scmmmh/jupyterlab-local-browser/actions/workflows/build.yml)
